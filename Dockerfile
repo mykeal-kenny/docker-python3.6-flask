@@ -8,13 +8,11 @@ WORKDIR /app
 ADD . /app
 
 #Install any neeeded packages specified in requirements.txt
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
-
-#Make port 4000 available to the world outside this container
-EXPOSE 4000
+RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
 
 #Define environment variable
 ENV NAME world
 
 #Run app.py when the container launches
-CMD ["python", "app.py"]
+ENTRYPOINT ["python"]
+CMD ["app.py"]
