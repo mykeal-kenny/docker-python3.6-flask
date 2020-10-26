@@ -1,0 +1,37 @@
+# Use an Official Python runtime as a parent image
+FROM python:3.7.9-buster
+
+# Install necessary tools
+RUN DEBIAN_FRONTEND="noninteractive" apt-get update -y && \
+apt-get upgrade -y && \ 
+apt-get install python3-pip -y && \
+pip3 install --upgrade setuptools wheel && \
+pip3 install \
+flask_restful \
+flask-cors \
+pymongo \
+openpyxl \
+PyJWT \
+pandas \
+keras \ 
+numpy==1.18.5 \
+tensorflow \
+scikit-learn
+
+
+#Set the working directory to /home
+## NOTE: ALL DIRECTORIES OUTSIDE OF /home ARE NOT PERSISTENT
+WORKDIR /home
+
+#COPY the current directory contents into the container at /home
+ADD . /home
+
+#Install any neeeded packages specified in requirements.txt
+# RUN pip install --trusted-host pypi.python.org --no-cache-dir -r requirements.txt
+
+#Define environment variable
+ENV NAME world
+
+#Run app.py when the container launches
+ENTRYPOINT ["python"]
+CMD ["app.py"]

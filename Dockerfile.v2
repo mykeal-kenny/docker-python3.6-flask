@@ -1,0 +1,58 @@
+# Use an Official Python runtime as a parent image
+# Using Debian Buster slim for the C-library 
+FROM python:3.7.9-slim-buster
+
+# Necessary to simplify the Debian package installs
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install necessary tools
+##### Steps explained:
+## Update all of the packages available for this Debian image
+# COMMAND: 
+# apt-get update -y
+
+## Upgrade all of the packages currently installed
+# COMMAND: 
+# apt-get upgrade -y
+
+## Add the python3-pip package to enable the pip3 install option ## BY DEFAULT THIS IS NOT PRESENT
+# COMMAND: 
+# apt-get install python3-pip -y 
+
+## Install the most up-to-date setuptools and wheel package, this is necessary to build dependencies
+# COMMAND: 
+# pip3 install --upgrade setuptools wheel
+
+RUN apt-get update -y && apt-get upgrade -y && apt-get install python3-pip -y && \
+pip3 install --upgrade setuptools wheel
+
+# Alternatively, you can pip3 install each individual package as necessary with the following command
+## However, that will install the newest ones and it will not necessarily match what you have on your requirements.txt
+# pip3 install \
+# flask_restful \
+# flask-cors \
+# pymongo \
+# openpyxl \
+# PyJWT \
+# pandas \
+# keras \ 
+# numpy==1.18.5 \
+# tensorflow \
+# scikit-learn
+
+#Set the working directory to /home
+## NOTE: ALL DIRECTORIES OUTSIDE OF /home ARE NOT PERSISTENT
+WORKDIR /home
+
+#COPY the current directory contents into the container at /home
+ADD . /home
+
+#Install any neeeded packages specified in requirements.txt
+RUN pip3 install -r requirements.txt
+
+#Define environment variable
+ENV NAME world
+
+#Run app.py when the container launches
+ENTRYPOINT ["python"]
+CMD ["app.py"]
